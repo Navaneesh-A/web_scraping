@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navaneesh Command Hub</title>
+    <style>
+        :root {
+            --bg-main: #030712;
+            --bg-card: #111827;
+            --bg-input: #030712;
+            --border-color: #1f2937;
+            --text-main: #f9fafb;
+            --text-muted: #9ca3af;
+            --accent-emerald: #10b981;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            padding: 2rem;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+        }
+
+        .header h1 {
+            font-size: 1.75rem;
+            color: var(--accent-emerald);
+            font-weight: 800;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 1.25rem;
+            border-radius: 12px;
+        }
+
+        .launch-label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .input-bar {
+            flex-grow: 1;
+            background: var(--bg-input);
+            border: 1px solid #374151;
+            color: #fff;
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+        }
+
+        .btn {
+            border: none;
+            padding: 0.5rem 1rem;
+            color: #fff;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 900;
+            margin: 0.5rem 0;
+            display: block;
+        }
+
+        /* Layout Grids */
+        .matrix-flex {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+        }
+
+        .matrix-box {
+            width: 30px;
+            height: 30px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+            font-weight: bold;
+            position: relative;
+        }
+
+        /* ⚡ 24 Hour Block Scaling */
+        .hourly-box {
+            height: 42px;
+            width: 52px;
+            border-radius: 6px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .hourly-box span {
+            font-size: 8px;
+            display: block;
+        }
+
+        .hourly-box blockquote {
+            font-size: 11px;
+            margin-top: 2px;
+            font-family: monospace;
+        }
+
+        /* Navigation Arrows Elements */
+        .arrow-nav {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #1f2937;
+            padding: 4px 10px;
+            border-radius: 6px;
+            border: 1px solid #374151;
+            text-decoration: none;
+            color: #fff;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .arrow-nav:hover {
+            background: #374151;
+        }
+
+        /* 🎬 Sliding Reveal Entry Chains */
+        .pop-row {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .pop-row.reveal {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .snapshot-preview {
+            width: 38px;
+            height: 38px;
+            background: #1f2937;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #374151;
+            shrink: 0;
+        }
+
+        .roadmap-timeline {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            padding: 1.5rem 0;
+        }
+
+        .roadmap-node {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            width: 18%;
+            position: relative;
+            z-index: 2;
+        }
+
+        .node-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #064e3b;
+            border: 2px solid var(--accent-emerald);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .node-text {
+            font-size: 11px;
+            color: #e5e7eb;
+            width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .roadmap-line {
+            position: absolute;
+            top: 31px;
+            left: 5%;
+            width: 90%;
+            height: 2px;
+            background: #374151;
+            z-index: 1;
+        }
+
+        .list-container {
+            display: flex;
+            flex-direction: column;
+            max-height: 380px;
+            overflow-y: auto;
+        }
+
+        .truncate {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 80%;
+        }
+    </style>
+</head>
+
+<body>
+
+    <audio id="chime-audio" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-84.wav" preload="auto"></audio>
+
+    <div class="container">
+        <div class="header">
+            <div>
+                <h1>NAVANEESH MONITOR HUB</h1>
+                <p>Telemetry Node Center</p>
+            </div>
+            <div>
+                <span
+                    style="font-size: 0.75rem; font-family: monospace; background: #064e3b; color: #34d399; padding: 4px 10px; border-radius: 9999px;">DATA
+                    INSULATION SECURE</span>
+            </div>
+        </div>
+
+        <div class="grid-3">
+            <div class="card">
+                <span class="launch-label">Google Search</span>
+                <form action="https://google.com/search" method="get" target="_blank" class="form-group">
+                    <input type="text" name="q" placeholder="Query context..." class="input-bar">
+                    <button type="submit" class="btn" style="background: #059669;">Go</button>
+                </form>
+            </div>
+            <div class="card">
+                <span class="launch-label">YouTube Lookup</span>
+                <form action="https://youtube.com/results" method="get" target="_blank" class="form-group">
+                    <input type="text" name="search_query" placeholder="Search resources..." class="input-bar">
+                    <button type="submit" class="btn" style="background: #dc2626;">Go</button>
+                </form>
+            </div>
+            <div class="card">
+                <span class="launch-label">Gemini Workspace</span>
+                <form action="https://gemini.google.com/app" method="get" target="_blank" class="form-group">
+                    <input type="text" name="q" placeholder="Prompt system..." class="input-bar">
+                    <button type="submit" class="btn" style="background: #2563eb;">Ask</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="grid-3">
+            <div class="card">
+                <span class="launch-label">Target Day Metrics Total</span>
+                <span class="metric-value">{{ data.stats.today_count }} <span
+                        style="font-size:12px; color:var(--text-muted);">pages</span></span>
+            </div>
+            <div class="card">
+                <span class="launch-label">Weekly Velocity Frame</span>
+                <span class="metric-value" style="color: #60a5fa;">{{ data.stats.weekly_count }}</span>
+            </div>
+            <div class="card">
+                <span class="launch-label">Productive Focus Index</span>
+                <span class="metric-value" style="color: #a78bfa;">{{ data.stats.productive_ratio }}%</span>
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="card">
+                <span class="launch-label" style="margin-bottom: 1rem;">30-Day Calendar Consistency Grid</span>
+                <div class="matrix-flex">
+                    {% for day in data.calendar %}
+                    <div class="matrix-box" style="background-color: {{ day.color }};"
+                        title="{{ day.date }}: {{ day.count }} logs"></div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <span class="launch-label">24-Hour Analytical Distribution Grid</span>
+                    <div style="display: flex; gap: 0.35rem; align-items: center;">
+                        <a href="/?date={{ prev_date }}" class="arrow-nav">← Previous</a>
+                        <span
+                            style="font-size:11px; font-family:monospace; font-weight:bold; background:#030712; padding:4px 8px; border-radius:4px; border:1px solid #1f2937;">{{
+                            selected_date }}</span>
+                        <a href="/?date={{ next_date }}" class="arrow-nav">Next →</a>
+                    </div>
+                </div>
+                <div class="matrix-flex" style="gap: 0.45rem;">
+                    {% for block in data.hourly_map %}
+                    <div class="hourly-box" style="background-color: {{ block.color }};"
+                        title="{{ block.hour_label }} -> {{ block.count }} hits">
+                        <span style="color: #9ca3af;">{{ block.hour_label.split(' ')[0] }}</span>
+                        <span style="color: #6b7280; font-size:7px;">{{ block.hour_label.split(' ')[1] }}</span>
+                        <blockquote>{{ block.count }}</blockquote>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <span class="launch-label">Target Day Sequential Topic Roadmap</span>
+            {% if data.roadmap %}
+            <div class="roadmap-timeline">
+                <div class="roadmap-line"></div>
+                {% for node in data.roadmap %}
+                <div class="roadmap-node">
+                    <div class="node-circle">{{ loop.index }}</div>
+                    <a href="{{ node.url }}" target="_blank" class="node-text">{{ node.title }}</a>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p style="font-size:12px; color:var(--text-muted); padding:1rem 0;">No active engineering entries recorded
+                for this calendar link target.</p>
+            {% endif %}
+        </div>
+
+        <div class="grid-2">
+            <div class="card" style="padding:0;">
+                <div style="padding:1rem; border-bottom:1px solid var(--border-color);"><span
+                        class="launch-label">Grouped Domain Volume (Today Strictly)</span></div>
+                <div class="list-container">
+                    {% for item in data.grouped_history %}
+                    <div
+                        style="display:flex; justify-content:space-between; padding:0.9rem 1rem; border-bottom:1px solid var(--border-color);">
+                        <span style="font-family:monospace; font-size:13px;">{{ item.domain }}</span>
+                        <span
+                            style="background:#374151; padding:2px 8px; border-radius:20px; font-size:11px; font-weight:bold;">{{
+                            item.count }} interactions</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="card" style="padding: 0;">
+                <div style="padding: 1rem; border-bottom: 1px solid var(--border-color);"><span
+                        class="launch-label">Recent Visual Footprint Trace</span></div>
+                <div class="list-container" id="history-animation-track">
+                    {% for item in data.history %}
+                    <div class="pop-row">
+                        <div class="snapshot-preview">
+                            <img src="https://www.google.com/s2/favicons?sz=64&domain={{ item.domain }}"
+                                style="width:20px; height:20px;" onerror="this.style.display='none'">
+                        </div>
+                        <div class="truncate" style="flex-grow:1;">
+                            <div style="font-size:13px; font-weight:600; color:#e5e7eb;" class="truncate">{{ item.title
+                                }}</div>
+                            <a href="{{ item.url }}" target="_blank"
+                                style="font-size:11px; color:var(--accent-emerald); text-decoration:none;"
+                                class="truncate block">{{ item.url }}</a>
+                        </div>
+                        <span style="font-size:11px; color:var(--text-muted); font-family:monospace;">{{ item.time
+                            }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const rows = document.querySelectorAll(".pop-row");
+            const audio = document.getElementById("chime-audio");
+
+            rows.forEach((row, index) => {
+                setTimeout(() => {
+                    row.classList.add("reveal");
+                    if (index < 3) {
+                        audio.currentTime = 0;
+                        audio.play().catch(() => { });
+                    }
+                }, index * 200);
+            });
+        });
+
+        // 🎯 RELOAD ONLY WHEN YOU SHIFT TABS BACK INTO APP (CLEAN EXTRACTIONS)
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') {
+                window.location.reload();
+            }
+        });
+    </script>
+</body>
+
+</html>
