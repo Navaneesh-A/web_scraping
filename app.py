@@ -6,8 +6,7 @@ from flask import Flask, render_template
 
 app = Flask(__name__)
 
-HISTORY_FILE = "History"
-PRODUCTIVE_DOMAINS = ["leetcode.com", "github.com", "codeforces.com", "stackoverflow.com", "gemini.google.com"]
+HISTORY_FILE = r"C:\Users\Admin\AppData\Local\Microsoft\Edge\User Data\Default\History"PRODUCTIVE_DOMAINS = ["leetcode.com", "github.com", "codeforces.com", "stackoverflow.com", "gemini.google.com"]
 
 def chrome_time_to_datetime(timestamp):
     try:
