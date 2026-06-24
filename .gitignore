@@ -1,0 +1,8 @@
+# Python environment
+.venv/
+__pycache__/
+*.pyc
+
+# Personal browser database files
+History
+history_copy.db

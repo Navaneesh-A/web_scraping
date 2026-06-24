@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Execution Center</title>
+    <style>
+        :root {
+            --bg-main: #030712;
+            --bg-card: #111827;
+            --bg-input: #030712;
+            --border-color: #1f2937;
+            --text-main: #f9fafb;
+            --text-muted: #9ca3af;
+            --accent-emerald: #10b981;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* Header styling */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+        }
+
+        .header h1 {
+            font-size: 1.75rem;
+            color: var(--accent-emerald);
+            letter-spacing: -0.05em;
+            font-weight: 800;
+        }
+
+        .header p {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        /* Launchpad grids */
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 1.25rem;
+            rounded-radius: 0.75rem;
+            border-radius: 12px;
+        }
+
+        .launch-label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.05em;
+        }
+
+        .form-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .input-bar {
+            flex-grow: 1;
+            background: var(--bg-input);
+            border: 1px solid #374151;
+            color: #fff;
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+        }
+
+        .btn {
+            border: none;
+            padding: 0.5rem 1rem;
+            color: #fff;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+
+        /* Layout Metrics */
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 900;
+            margin: 0.5rem 0;
+            display: block;
+        }
+
+        .sub-text {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* Matrix heatmap style grid */
+        .matrix-flex {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .matrix-box {
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: bold;
+            color: #e5e7eb;
+            position: relative;
+        }
+
+        .matrix-box:hover::after {
+            content: attr(title);
+            position: absolute;
+            bottom: 36px;
+            background: #000;
+            padding: 4px 8px;
+            border-radius: 4px;
+            white-space: nowrap;
+            font-size: 11px;
+            z-index: 10;
+            border: 1px solid #4b5563;
+        }
+
+        /* Rows list styling */
+        .list-container {
+            display: flex;
+            flex-direction: column;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .list-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .list-row:hover {
+            background-color: #1f2937;
+        }
+
+        .truncate {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 70%;
+        }
+
+        .row-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #e5e7eb;
+            margin-bottom: 0.25rem;
+        }
+
+        .row-link {
+            font-size: 0.75rem;
+            color: var(--accent-emerald);
+            text-decoration: none;
+        }
+
+        .row-link:hover {
+            text-decoration: underline;
+        }
+
+        .badge {
+            font-size: 10px;
+            font-weight: bold;
+            background: #0c4a6e;
+            color: #38bdf8;
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid #0369a1;
+            margin-right: 10px;
+        }
+
+        .row-time {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-family: monospace;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="header">
+            <div>
+                <h1>LOCAL MONITOR</h1>
+                <p>Data-driven habit optimization</p>
+            </div>
+            <div>
+                <span
+                    style="font-size: 0.75rem; font-family: monospace; background: #064e3b; color: #34d399; padding: 4px 10px; border-radius: 9999px;">LOCAL
+                    ONLY</span>
+            </div>
+        </div>
+
+        <div class="grid-3">
+            <div class="card">
+                <span class="launch-label">Google Search</span>
+                <form action="https://google.com/search" method="get" target="_blank" class="form-group">
+                    <input type="text" name="q" placeholder="Query context..." class="input-bar">
+                    <button type="submit" class="btn" style="background: #059669;">Go</button>
+                </form>
+            </div>
+            <div class="card">
+                <span class="launch-label">YouTube Lookup</span>
+                <form action="https://youtube.com/results" method="get" target="_blank" class="form-group">
+                    <input type="text" name="search_query" placeholder="Search resources..." class="input-bar">
+                    <button type="submit" class="btn" style="background: #dc2626;">Go</button>
+                </form>
+            </div>
+            <div class="card">
+                <span class="launch-label">Gemini Workspace</span>
+                <form action="https://gemini.google.com/app" method="get" target="_blank" class="form-group">
+                    <input type="text" name="q" placeholder="Prompt system..." class="input-bar">
+                    <button type="submit" class="btn" style="background: #2563eb;">Ask</button>
+                </form>
+            </div>
+        </div>
+
+        {% if not data.error %}
+        <div class="grid-3">
+            <div class="card">
+                <span class="launch-label">Daily Page Actions</span>
+                <span class="metric-value">{{ data.stats.today_count }}</span>
+                <span class="sub-text">Interactions logged today</span>
+            </div>
+            <div class="card">
+                <span class="launch-label">Weekly Volume Velocity</span>
+                <span class="metric-value" style="color: #60a5fa;">{{ data.stats.weekly_count }}</span>
+                <span class="sub-text">Logs tracked across rolling 7 days</span>
+            </div>
+            <div class="card">
+                <span class="launch-label">Productive Ratio Context</span>
+                <span class="metric-value" style="color: #a78bfa;">{{ data.stats.productive_ratio }}%</span>
+                <span class="sub-text">Engineering and core logical platforms distribution</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <span class="launch-label" style="margin-bottom: 1rem;">30-Day Activity Heatmap Matrix</span>
+            <div class="matrix-flex">
+                {% for day in data.calendar %}
+                <div class="matrix-box" style="background-color: {{ day.color }};"
+                    title="{{ day.date }}: {{ day.count }} visits">
+                    {{ day.count }}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="card" style="padding: 0;">
+            <div style="padding: 1rem; border-bottom: 1px solid var(--border-color);">
+                <span class="launch-label">Workspace Audit Footprint (Last 15 records)</span>
+            </div>
+            <div class="list-container">
+                {% for item in data.history %}
+                <div class="list-row">
+                    <div class="truncate">
+                        <div class="row-title" title="{{ item.title }}">{{ item.title }}</div>
+                        <a href="{{ item.url }}" target="_blank" class="row-link">{{ item.url }}</a>
+                    </div>
+                    <div style="display: flex; align-items: center; flex-shrink: 0;">
+                        {% if item.productive %}
+                        <span class="badge">Productive</span>
+                        {% endif %}
+                        <span class="row-time">{{ item.time }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+        <div class="card" style="border-color: #7f1d1d; color: #f87171; text-align: center;">
+            {{ data.error }} Drop your Edge <code>History</code> database source directly into this system's working
+            root folder.
+        </div>
+        {% endif %}
+    </div>
+
+</body>
+
+</html>
